@@ -1,3 +1,3 @@
 # mgmt_service
 
-Magement API for mgmt server
+Railroad Network - Management Service for infrastructure
