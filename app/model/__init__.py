@@ -18,6 +18,6 @@ class AnsiblePlaybookType(Enum):
 
     CREATE_VPN_USER = (1, 'pki.client.yml', ['--vault-password-file=vault.txt'], [])
     WITHDRAW_VPN_USER = (2, 'pki.client.yml', ['--vault-password-file=vault.txt'], [])
-    UPDATE_SERVER_CONNECTIONS = (3, 'server_connections.yml', ['--vault-password-file=vault.txt'], ['{"vpn" : "ipsec"}'])
+    UPDATE_SERVER_CONNECTIONS = (3, 'server_connections.yml', ['--vault-password-file=vault.txt'], [])
     GET_CRL_FROM_SERVER = (4, 'update.crl.yml', ['--vault-password-file=vault.txt'], ['{"get_crl" : "true"}'])
     UPDATE_CRL_FROM_SERVER = (5, 'update.crl.yml', ['--vault-password-file=vault.txt'], ['{"put_crl" : "true"}'])

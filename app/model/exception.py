@@ -13,7 +13,7 @@ def count():
     return i
 
 
-class VPNCError(APIErrorEnum):
+class VPNMGMTError(APIErrorEnum):
     __version__ = 1
 
     def __new__(cls, *args, **kwds):
@@ -25,6 +25,8 @@ class VPNCError(APIErrorEnum):
     UNKNOWN_ERROR_CODE = (name + str(count()), 'UNKNOWN_ERROR_CODE phrase', 'UNKNOWN_ERROR_CODE description')
 
     REQUEST_NO_JSON = (name + str(count()),  'REQUEST_NO_JSON phrase', 'REQUEST_NO_JSON description')
+
+    ANSIBLE_CREATE_USER_VPN_USER_ERROR = (name + str(count()),  'ANSIBLE_CREATE_USER_VPN_USER_ERROR phrase', 'ANSIBLE_CREATE_USER_VPN_USER_ERROR description')
 
 
 class VPNMGMTException(Exception):

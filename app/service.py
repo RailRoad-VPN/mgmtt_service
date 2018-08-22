@@ -3,14 +3,15 @@ import subprocess
 from typing import List
 
 from app.model.ansible_playbooks import *
+from app.model.exception import AnsibleException, VPNMGMTError
 
 
 class AnsibleService(object):
     __version__ = 1
 
-    _cmd_wo_args = None
-
     logger = logging.getLogger(__name__)
+
+    _cmd_wo_args = None
 
     def __init__(self, ansible_path, ansible_inventory_file, ansible_playbook_path):
         self.logger.debug("ansible Root Path: " + ansible_path)
@@ -72,7 +73,7 @@ class VPNMGMTService(object):
         generate user certificate on PKI infrastructure server and register it on every server
     '''
 
-    def create_vpn_user(self, user_email: str):
+    def create_vpn_user(self, user_email: str) -> str:
         self.logger.debug(f"create_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug("create ansible playbook to create VPN user")
         apcvu = AnsiblePlaybookCreateVPNUser()
@@ -83,10 +84,13 @@ class VPNMGMTService(object):
         self.logger.debug("check code")
         if code == 0:
             self.logger.debug("code OK")
-            return True
+            # TODO забрать конифг по пути /tmp/dfnvpn_ansible/<email>.ovpn
+            user_config_dict = apcvu.get_users_config_dict_base64()
+            return user_config_dict.get(user_email)
         else:
-            self.logger.debug("failed")
-            return False
+            self.logger.debug("failed to create VPN user")
+            err = VPNMGMTError.ANSIBLE_CREATE_USER_VPN_USER_ERROR
+            raise AnsibleException(error=err.message, error_code=err.code, developer_message=err.developer_message)
 
     '''
         withdaw user certificate on PKI infrastructure server and withdraw in on every server

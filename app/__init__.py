@@ -13,15 +13,20 @@ sys.path.insert(1, '../rest_api_library')
 from response import make_error_request_response
 from api import register_api
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
 # Load config based on env variable
 ENVIRONMENT_CONFIG = os.environ.get("ENVIRONMENT_CONFIG", default='DevelopmentConfig')
-logging.info("Got ENVIRONMENT_CONFIG variable: %s" % ENVIRONMENT_CONFIG)
+logger.info("Got ENVIRONMENT_CONFIG variable: %s" % ENVIRONMENT_CONFIG)
 config_name = "%s.%s" % ('config', ENVIRONMENT_CONFIG)
-logging.info("Config name: %s" % config_name)
+logger.info("Config name: %s" % config_name)
 app.config.from_object(config_name)
 
 
