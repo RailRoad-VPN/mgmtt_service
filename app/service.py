@@ -2,6 +2,7 @@ import logging
 import subprocess
 from typing import List
 
+from app.model import VPNTypeEnum
 from app.model.ansible_playbooks import *
 from app.model.exception import AnsibleException, VPNMGMTError
 
@@ -127,9 +128,9 @@ class VPNMGMTService(object):
         retrieve connections information from every VPN server (call scripts)
     '''
 
-    def update_server_connections(self, server_ip_list: List[str]) -> bool:
+    def update_server_connections(self, server_ip_list: List[str], vpn_type_name: str) -> bool:
         self.logger.debug(f"create ansible playbook to update server connections depends on list: {server_ip_list}")
-        apusc = AnsiblePlaybookUpdateServerConnections(ip_addresses_list=server_ip_list)
+        apusc = AnsiblePlaybookUpdateServerConnections(ip_addresses_list=server_ip_list, vpn_type=vpn_type_name)
         self.logger.debug("call ansible service")
         code = self._ansible_service.exec_playbook(ansible_playbook=apusc)
         if code == 0:

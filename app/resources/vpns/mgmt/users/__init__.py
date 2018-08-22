@@ -45,12 +45,9 @@ class VPNSMGMTUsersAPI(ResourceAPI):
         self.logger.debug('post method')
 
         try:
-            is_ok = self._vpn_mgmt_service.create_vpn_user(user_email=user_email)
+            config_base64_str = self._vpn_mgmt_service.create_vpn_user(user_email=user_email)
 
-            if is_ok:
-                response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
-            else:
-                response_data = APIResponse(status=APIResponseStatus.failed.status, code=HTTPStatus.BAD_REQUEST)
+            response_data = APIResponse(status=APIResponseStatus.success.status, data=config_base64_str, code=HTTPStatus.OK)
             resp = make_api_response(data=response_data, http_code=response_data.code)
             return resp
         except AnsibleException as e:
@@ -68,12 +65,9 @@ class VPNSMGMTUsersAPI(ResourceAPI):
         self.logger.debug('post method')
 
         try:
-            is_ok = self._vpn_mgmt_service.withdraw_vpn_user(user_email=user_email)
+            self._vpn_mgmt_service.withdraw_vpn_user(user_email=user_email)
 
-            if is_ok:
-                response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
-            else:
-                response_data = APIResponse(status=APIResponseStatus.failed.status, code=HTTPStatus.BAD_REQUEST)
+            response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
             resp = make_api_response(data=response_data, http_code=response_data.code)
             return resp
         except AnsibleException as e:

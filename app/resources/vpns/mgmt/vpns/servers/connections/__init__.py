@@ -20,7 +20,7 @@ class MGMTVPNSServersConnections(ResourceAPI):
     logger = logging.getLogger(__name__)
 
     __endpoint_name__ = __qualname__
-    __api_url__ = 'vpns/servers/connections'
+    __api_url__ = 'vpns/mgmt/servers/connections'
 
     _config = None
 
@@ -46,18 +46,16 @@ class MGMTVPNSServersConnections(ResourceAPI):
         request_json = request.json
 
         if request_json is None:
-            return make_error_request_response(HTTPStatus.BAD_REQUEST, err=VPNCError.REQUEST_NO_JSON)
+            return make_error_request_response(HTTPStatus.BAD_REQUEST, err=VPNMGMTError.REQUEST_NO_JSON)
 
         self.logger.debug('get list of IP addresses from request')
         ip_list = request_json.get('ip_list')
+        vpn_type_name = request_json.get('vpn_type_name')
 
         try:
-            is_ok = self._vpn_mgmt_service.update_server_connections(server_ip_list=ip_list)
+            self._vpn_mgmt_service.update_server_connections(server_ip_list=ip_list, vpn_type_name=vpn_type_name)
 
-            if is_ok:
-                response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
-            else:
-                response_data = APIResponse(status=APIResponseStatus.failed.status, code=HTTPStatus.BAD_REQUEST)
+            response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
             resp = make_api_response(data=response_data, http_code=response_data.code)
             return resp
         except AnsibleException as e:

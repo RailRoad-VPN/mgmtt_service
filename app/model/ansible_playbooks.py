@@ -4,7 +4,7 @@ import os
 
 import logging
 
-from app.model import AnsiblePlaybookType
+from app.model import AnsiblePlaybookType, VPNTypeEnum
 
 
 class AnsiblePlaybook(object):
@@ -24,10 +24,10 @@ class AnsiblePlaybook(object):
             self._extended_args.append(f"-e {earg}")
 
     def get_extended_args(self):
-        pass
+        self.logger.debug("get_extended_args method")
 
     def get_limit(self):
-        pass
+        self.logger.debug("get_limit method")
 
 
 class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
@@ -36,22 +36,25 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
     logger = logging.getLogger(__name__)
 
     _ip_addresses_list = []
+    _vpn_type = None
 
-    def __init__(self, ip_addresses_list: list = None, *args, **kwargs):
+    def __init__(self, vpn_type: str, ip_addresses_list: list = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self._vpn_type = vpn_type
         if ip_addresses_list:
             self._ip_addresses_list = ip_addresses_list
 
     def add_ip_address(self, ip: str):
+        self.logger.debug(f"add_ip_address method {ip}")
         self._ip_addresses_list.append(ip)
 
     def add_ip_addresses(self, *ips):
+        self.logger.debug(f"add_ip_addresses method {ips}")
         for ip in ips:
             self._ip_addresses_list.append(ip)
 
     def get_extended_args(self):
-        return '{"vpn" : "ipsec"}'
+        return f'{"vpn" : "{self._vpn_type}"}'
 
     def get_limit(self):
         return f"'--limit {','.join(self._ip_addresses_list)}'"
@@ -73,16 +76,15 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             self._user_email_list = user_email_list
 
     def add_user(self, user_email: str):
-        self.logger.debug("add_user method")
+        self.logger.debug(f"add_user method {user_email}")
         self._user_email_list.append(user_email)
 
     def add_users(self, *user_emails):
-        self.logger.debug("add_users method")
+        self.logger.debug(f"add_users method {user_emails}")
         for user in user_emails:
             self._user_email_list.append(user)
 
     def get_extended_args(self):
-        self.logger.debug("get_extended_args method")
         client_list = []
         for user_email in self._user_email_list:
             client = {"name": user_email, "state": "present"}
@@ -100,13 +102,17 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
         for user_email in self._user_email_list:
             # TODO ikev2 config
             openvpn_config_path = f"{self._user_config_dir}/{user_email}.ovpn"
+            self.logger.debug(f"work with {openvpn_config_path}")
             if os.path.isfile(openvpn_config_path):
+                self.logger.debug(f"read file")
                 file = open(openvpn_config_path, 'rb')
                 file_content = file.read()
                 file.close()
 
+                self.logger.debug(f"create base64 string")
                 config_base64_str = base64.b64encode(file_content).decode('ascii')
                 data[user_email] = config_base64_str
+                self.logger.debug(f"delete fil")
                 os.remove(openvpn_config_path)
             else:
                 self.logger.error(f"{openvpn_config_path} file not found!")
@@ -129,9 +135,11 @@ class AnsiblePlaybookWithdrawVPNUser(AnsiblePlaybook):
             self._user_email_list = user_email_list
 
     def add_user(self, user_email: str):
+        self.logger.debug(f"add_user method {user_email}")
         self._user_email_list.append(user_email)
 
     def add_users(self, *user_emails):
+        self.logger.debug(f"add_users method {user_emails}")
         for user in user_emails:
             self._user_email_list.append(user)
 
