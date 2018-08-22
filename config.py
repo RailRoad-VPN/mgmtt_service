@@ -40,7 +40,7 @@ class TestingConfig(Config):
     DEBUG = True
 
     ANSIBLE_CONFIG = {
-        'root_path': '/home/dfnadm/my/',
-        'playbook_path': '/home/dfnadm/my/playbooks',
-        'inventory_file': '/home/dfnadm/my/inventory',
+        'root_path': '/opt/dfnvpn/playbooks',
+        'playbook_path': '/opt/dfnvpn/playbooks',
+        'inventory_file': '/etc/ansible/hosts',
     }
