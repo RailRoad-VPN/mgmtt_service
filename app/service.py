@@ -1,8 +1,6 @@
-import logging
 import subprocess
 from typing import List
 
-from app.model import VPNTypeEnum
 from app.model.ansible_playbooks import *
 from app.model.exception import AnsibleException, VPNMGMTError
 

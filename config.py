@@ -32,6 +32,7 @@ class DevelopmentConfig(Config):
         'inventory_file': '',
     }
 
+
 class TestingConfig(Config):
     ENV = 'testing'
 
