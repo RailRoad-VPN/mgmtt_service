@@ -4,7 +4,7 @@ import os
 
 import logging
 
-from app.model import AnsiblePlaybookType, VPNTypeEnum
+from app.model import AnsiblePlaybookType
 
 
 class AnsiblePlaybook(object):
