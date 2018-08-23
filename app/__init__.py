@@ -5,7 +5,7 @@ from http import HTTPStatus
 
 from flask import Flask, request
 from flask_httpauth import HTTPBasicAuth
-from app.service import AnsibleService
+from app.service import AnsibleService, VPNMGMTService
 
 sys.path.insert(1, '../rest_api_library')
 from response import make_error_request_response
@@ -47,12 +47,14 @@ ansible_service = AnsibleService(ansible_inventory_file=app_config['ANSIBLE_CONF
                                  ansible_path=app_config['ANSIBLE_CONFIG']['root_path'],
                                  ansible_playbook_path=app_config['ANSIBLE_CONFIG']['playbook_path'])
 
+vpn_mgmt_service = VPNMGMTService(ansible_service=ansible_service)
+
 from app.resources.vpns.mgmt.users import VPNSMGMTUsersAPI
 from app.resources.vpns.mgmt.vpns.servers.connections import MGMTVPNSServersConnections
 
 apis = [
-    {'cls': VPNSMGMTUsersAPI, 'args': [ansible_service, app_config]},
-    {'cls': MGMTVPNSServersConnections, 'args': [ansible_service, app_config]},
+    {'cls': VPNSMGMTUsersAPI, 'args': [vpn_mgmt_service, app_config]},
+    {'cls': MGMTVPNSServersConnections, 'args': [vpn_mgmt_service, app_config]},
 ]
 
 register_api(app, api_base_uri, apis)
