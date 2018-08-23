@@ -23,9 +23,9 @@ class AnsiblePlaybook(object):
         for earg in ansible_playbook_type.ext_args:
             self._extended_args.append(f"-e {earg}")
 
-    def get_vault(self, ansible_root_path: str):
+    def get_vault(self, path_to_vault: str):
         self.logger.debug("get_vault method")
-        vault_arg = f'--vault-password-file={ansible_root_path}/vault.txt'
+        vault_arg = f'--vault-password-file={path_to_vault}/vault.txt'
         self.logger.debug(f"vault_arg: {vault_arg}")
         return vault_arg
 
