@@ -50,7 +50,7 @@ class AnsibleService(object):
 
         cmd += ansible_playbook.get_vault(path_to_vault=f"{self.ansible_root_path}/{self.ansible_playbook_path}")
 
-        cmd = f"/bin/su dfnadm -c '{cmd}'"
+        cmd = f"/bin/su dfnadm -c \"{cmd}\""
 
         self.logger.debug(f"final cmd: {cmd}")
 
