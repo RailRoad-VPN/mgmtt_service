@@ -18,7 +18,7 @@ class AnsibleService(object):
         self.logger.debug("ansible Playbooks Path: " + ansible_playbook_path)
 
         self.logger.debug("create ansible command with out arguments")
-        self._cmd_wo_args = f"ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}" + f" -i {ansible_path}/{ansible_inventory_file} -l " + "{inventory_group} -f 1"
+        self._cmd_wo_args = f"ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}" + f" -i {ansible_inventory_file} -l " + "{inventory_group} -f 1"
 
         self.logger.info("base ansible shell command: " + self._cmd_wo_args)
 
