@@ -71,7 +71,6 @@ class AnsibleService(object):
                 self.logger.error(f"execute ansible playbook {name} output: {output}")
             if err is not None:
                 self.logger.error(f"execute ansible playbook {name} error: {err}")
-                return 9090909090
             if p_status is not None:
                 try:
                     p_status = int(p_status)
