@@ -51,9 +51,11 @@ class AnsibleService(object):
                 self.logger.error(f"execute ansible playbook {name} output: {output}")
             if err is not None:
                 self.logger.error(f"execute ansible playbook {name} error: {err}")
+                return 9090909090
             if p_status is not None:
                 try:
                     p_status = int(p_status)
+                    self.logger.debug(f"execute ansible playbook {name} status: {p_status}")
                 except KeyError:
                     self.logger.info(f"exec ansible playbook {name} return code: {p_status}")
                 return p_status
