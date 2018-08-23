@@ -38,7 +38,13 @@ class AnsibleService(object):
             cmd += f"-l  {ansible_playbook.inventory_group_name}" + "-f 1"
         cmd = cmd.format(pb_name=ansible_playbook.name)
         self.logger.debug(cmd)
-        cmd += " -e " + ansible_playbook.get_extended_args()
+
+        for e_arg in ansible_playbook.get_extended_args():
+            cmd += e_arg
+        self.logger.debug(cmd)
+
+        for arg in ansible_playbook.get_args():
+            cmd += arg
         self.logger.debug(f"final cmd: {cmd}")
 
         self.logger.info("execute ansible shell command")

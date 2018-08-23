@@ -14,14 +14,20 @@ class AnsiblePlaybook(object):
 
     name = None
     inventory_group_name = None
+    args = None
     _extended_args = []
 
     def __init__(self, ansible_playbook_type: AnsiblePlaybookType, inventory_group_name: str = None):
         self.name = ansible_playbook_type.pb_name
         self.inventory_group_name = inventory_group_name
+        self.args = ansible_playbook_type.args
 
         for earg in ansible_playbook_type.ext_args:
             self._extended_args.append(f"-e {earg}")
+
+    def get_args(self):
+        self.logger.debug("get_args method")
+        return f"{','.join(self.args)}"
 
     def get_extended_args(self):
         self.logger.debug("get_extended_args method")
@@ -54,7 +60,7 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
             self._ip_addresses_list.append(ip)
 
     def get_extended_args(self):
-        return '{"vpn" : "{%s}"}' % self._vpn_type
+        return "-e '{\"vpn\" : \"%s\"}'" % self._vpn_type
 
     def get_limit(self):
         return f"'--limit {','.join(self._ip_addresses_list)}'"
