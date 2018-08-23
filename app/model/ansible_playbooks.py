@@ -1,8 +1,7 @@
 import base64
 import json
-import os
-
 import logging
+import os
 
 from app.model import AnsiblePlaybookType
 
@@ -27,7 +26,7 @@ class AnsiblePlaybook(object):
 
     def get_args(self):
         self.logger.debug("get_args method")
-        return f"{','.join(self.args)}"
+        return [f"{','.join(self.args)}", ]
 
     def get_extended_args(self):
         self.logger.debug("get_extended_args method")
@@ -60,7 +59,7 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
             self._ip_addresses_list.append(ip)
 
     def get_extended_args(self):
-        return "-e '{\"vpn\" : \"%s\"}'" % self._vpn_type
+        return ["-e '{\"vpn\" : \"%s\"}'" % self._vpn_type, ]
 
     def get_limit(self):
         return f"'--limit {','.join(self._ip_addresses_list)}'"
