@@ -49,6 +49,9 @@ class AnsibleService(object):
         self.logger.debug(cmd)
 
         cmd += ansible_playbook.get_vault(path_to_vault=f"{self.ansible_root_path}/{self.ansible_playbook_path}")
+
+        cmd = f"su dfnadm -c '{cmd}'"
+
         self.logger.debug(f"final cmd: {cmd}")
 
         self.logger.info("execute ansible shell command")
