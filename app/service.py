@@ -23,7 +23,7 @@ class AnsibleService(object):
         self.logger.debug("ansible Playbooks Path: " + ansible_playbook_path)
 
         self.logger.debug("create ansible command with out arguments")
-        self._cmd_wo_args = f"ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}"
+        self._cmd_wo_args = f"/usr/bin/ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}"
         if ansible_inventory_file is not None:
             self._cmd_wo_args += f" -i {ansible_inventory_file} "
 
