@@ -35,16 +35,16 @@ class AnsibleService(object):
         cmd = self._cmd_wo_args
         self.logger.debug(cmd)
         if ansible_playbook.inventory_group_name is not None:
-            cmd += f"-l  {ansible_playbook.inventory_group_name}" + "-f 1"
+            cmd += f"-l  {ansible_playbook.inventory_group_name}" + " -f 1 "
         cmd = cmd.format(pb_name=ansible_playbook.name)
         self.logger.debug(cmd)
 
         for e_arg in ansible_playbook.get_extended_args():
-            cmd += e_arg
+            cmd += f" {e_arg} "
         self.logger.debug(cmd)
 
         for arg in ansible_playbook.get_args():
-            cmd += arg
+            cmd += f" {arg} "
         self.logger.debug(f"final cmd: {cmd}")
 
         self.logger.info("execute ansible shell command")
