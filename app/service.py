@@ -12,13 +12,15 @@ class AnsibleService(object):
 
     _cmd_wo_args = None
 
-    def __init__(self, ansible_path, ansible_inventory_file, ansible_playbook_path):
+    def __init__(self, ansible_path: str, ansible_inventory_file: str, ansible_playbook_path: str):
         self.logger.debug("ansible Root Path: " + ansible_path)
         self.logger.debug("ansible inventory file: " + ansible_inventory_file)
         self.logger.debug("ansible Playbooks Path: " + ansible_playbook_path)
 
         self.logger.debug("create ansible command with out arguments")
-        self._cmd_wo_args = f"ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}" + f" -i {ansible_inventory_file} -l " + "{inventory_group} -f 1"
+        self._cmd_wo_args = f"ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}"
+        if ansible_inventory_file is not None:
+            self._cmd_wo_args += f" -i {ansible_inventory_file} "
 
         self.logger.info("base ansible shell command: " + self._cmd_wo_args)
 
@@ -32,7 +34,9 @@ class AnsibleService(object):
 
         cmd = self._cmd_wo_args
         self.logger.debug(cmd)
-        cmd = cmd.format(pb_name=ansible_playbook.name, inventory_group=ansible_playbook.inventory_group_name)
+        if ansible_playbook.inventory_group_name is not None:
+            cmd += f"-l  {ansible_playbook.inventory_group_name}" + "-f 1"
+        cmd = cmd.format(pb_name=ansible_playbook.name)
         self.logger.debug(cmd)
         cmd += " -e " + ansible_playbook.get_extended_args()
         self.logger.debug(f"final cmd: {cmd}")
