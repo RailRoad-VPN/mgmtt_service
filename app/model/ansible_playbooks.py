@@ -90,18 +90,6 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
         for user in user_emails:
             self._user_email_list.append(user)
 
-    def get_extended_args(self):
-        client_list = []
-        for user_email in self._user_email_list:
-            client = {"name": user_email, "state": "present"}
-            client_list.append(client)
-        client_e_arg = {
-            "clients": client_list
-        }
-        client_e_arg_str = json.dumps(client_e_arg)
-        self._extended_args.append(f"-e {client_e_arg_str}")
-        return self._extended_args
-
     def get_users_config_dict_base64(self) -> dict:
         self.logger.debug("get_users_config_dict_base64 method")
         data = {}
@@ -125,6 +113,21 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
                 self.logger.error(f"We did not get OpenVPN configuration file for user with email {user_email}")
                 continue
         return data
+
+    def get_extended_args(self):
+        client_list = []
+        for user_email in self._user_email_list:
+            client = {"name": user_email, "state": "present"}
+            client_list.append(client)
+        client_e_arg = {
+            "clients": client_list
+        }
+        client_e_arg_str = json.dumps(client_e_arg)
+        self._extended_args.append(f"-e {client_e_arg_str}")
+        return self._extended_args
+
+    def get_limit(self):
+        return []
 
 
 class AnsiblePlaybookWithdrawVPNUser(AnsiblePlaybook):
@@ -161,6 +164,9 @@ class AnsiblePlaybookWithdrawVPNUser(AnsiblePlaybook):
         self._extended_args.append(f"-e {client_e_arg_str}")
         return self._extended_args
 
+    def get_limit(self):
+        return []
+
 
 class AnsiblePlaybookGetCRL(AnsiblePlaybook):
     __version__ = 1
@@ -172,6 +178,12 @@ class AnsiblePlaybookGetCRL(AnsiblePlaybook):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def get_extended_args(self):
+        return []
+
+    def get_limit(self):
+        return []
+
 
 class AnsiblePlaybookPutCRL(AnsiblePlaybook):
     __version__ = 1
@@ -182,3 +194,9 @@ class AnsiblePlaybookPutCRL(AnsiblePlaybook):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def get_extended_args(self):
+        return []
+
+    def get_limit(self):
+        return []

@@ -40,7 +40,7 @@ class AnsibleService(object):
         cmd = self._cmd_wo_args
         self.logger.debug(cmd)
         if ansible_playbook.inventory_group_name is not None:
-            cmd += f"-l  {ansible_playbook.inventory_group_name}" + " -f 1 "
+            cmd += f" -l  {ansible_playbook.inventory_group_name}" + " -f 1 "
         cmd = cmd.format(pb_name=ansible_playbook.name)
         self.logger.debug(cmd)
 
@@ -48,7 +48,14 @@ class AnsibleService(object):
             cmd += f" {e_arg} "
         self.logger.debug(cmd)
 
-        cmd += ansible_playbook.get_vault(path_to_vault=f"{self.ansible_root_path}/{self.ansible_playbook_path}")
+        vault = ansible_playbook.get_vault(path_to_vault=f"{self.ansible_root_path}/{self.ansible_playbook_path}")
+        cmd += f" {vault} "
+        self.logger.debug(cmd)
+
+        limit = ansible_playbook.get_limit()
+        if limit:
+            cmd += f" {limit} "
+            self.logger.debug(cmd)
 
         cmd = f"/bin/su dfnadm -c \"{cmd}\""
 
