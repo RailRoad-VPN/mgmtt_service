@@ -5,6 +5,7 @@ from typing import List
 
 from flask import Response
 
+from app import auth
 from app.model.exception import AnsibleException
 from app.service import VPNMGMTService
 
@@ -41,13 +42,15 @@ class VPNSMGMTUsersAPI(ResourceAPI):
         self._vpn_mgmt_service = vpn_mgmt_service
         self._config = config
 
+    @auth.login_required
     def post(self, user_email: str) -> Response:
         self.logger.debug('post method')
 
         try:
             config_base64_str = self._vpn_mgmt_service.create_vpn_user(user_email=user_email)
 
-            response_data = APIResponse(status=APIResponseStatus.success.status, data=config_base64_str, code=HTTPStatus.OK)
+            response_data = APIResponse(status=APIResponseStatus.success.status, data=config_base64_str,
+                                        code=HTTPStatus.OK)
             resp = make_api_response(data=response_data, http_code=response_data.code)
             return resp
         except AnsibleException as e:
@@ -61,6 +64,7 @@ class VPNSMGMTUsersAPI(ResourceAPI):
             resp = make_api_response(data=response_data, http_code=http_code)
             return resp
 
+    @auth.login_required
     def delete(self, user_email: str):
         self.logger.debug('post method')
 

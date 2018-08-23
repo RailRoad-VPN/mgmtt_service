@@ -10,6 +10,11 @@ class Config(object):
     VERSION = 'v1'
     API_BASE_URI = '/api/%s' % VERSION
 
+    BASIC_AUTH = {
+        'username': 'dfnadm',
+        'password': 'jdn@94nfju%HFn1m3'
+    }
+
 
 class ProductionConfig(Config):
     ENV = 'production'

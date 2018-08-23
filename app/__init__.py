@@ -4,9 +4,7 @@ import sys
 from http import HTTPStatus
 
 from flask import Flask, request
-
-from app.resources.vpns.mgmt.users import VPNSMGMTUsersAPI
-from app.resources.vpns.mgmt.vpns.servers.connections import MGMTVPNSServersConnections
+from flask_httpauth import HTTPBasicAuth
 from app.service import AnsibleService
 
 sys.path.insert(1, '../rest_api_library')
@@ -29,13 +27,28 @@ config_name = "%s.%s" % ('config', ENVIRONMENT_CONFIG)
 logger.info("Config name: %s" % config_name)
 app.config.from_object(config_name)
 
-
 app_config = app.config
 api_base_uri = app_config['API_BASE_URI']
+
+auth = HTTPBasicAuth()
+
+data = app.config['BASIC_AUTH']
+
+
+@auth.verify_password
+def verify(username, password):
+    if not (username and password):
+        return False
+    if username == data['username'] and password == data['password']:
+        return True
+
 
 ansible_service = AnsibleService(ansible_inventory_file=app_config['ANSIBLE_CONFIG']['inventory_file'],
                                  ansible_path=app_config['ANSIBLE_CONFIG']['root_path'],
                                  ansible_playbook_path=app_config['ANSIBLE_CONFIG']['playbook_path'])
+
+from app.resources.vpns.mgmt.users import VPNSMGMTUsersAPI
+from app.resources.vpns.mgmt.vpns.servers.connections import MGMTVPNSServersConnections
 
 apis = [
     {'cls': VPNSMGMTUsersAPI, 'args': [ansible_service, app_config]},

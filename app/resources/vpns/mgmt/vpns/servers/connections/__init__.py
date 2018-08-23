@@ -4,6 +4,7 @@ from typing import List
 
 from flask import Response, request
 
+from app import auth
 from app.model.exception import *
 from app.service import VPNMGMTService
 
@@ -39,6 +40,7 @@ class MGMTVPNSServersConnections(ResourceAPI):
         self._config = config
         self._vpn_mgmt_service = vpnmgmt_service
 
+    @auth.login_required
     def post(self) -> Response:
         self.logger.debug('post method')
 
