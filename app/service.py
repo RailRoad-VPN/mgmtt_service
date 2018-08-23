@@ -10,9 +10,11 @@ class AnsibleService(object):
 
     logger = logging.getLogger(__name__)
 
+    ansible_root_path = None
     _cmd_wo_args = None
 
     def __init__(self, ansible_path: str, ansible_inventory_file: str, ansible_playbook_path: str):
+        self.ansible_root_path = ansible_path
         self.logger.debug("ansible Root Path: " + ansible_path)
         self.logger.debug("ansible inventory file: " + ansible_inventory_file)
         self.logger.debug("ansible Playbooks Path: " + ansible_playbook_path)
@@ -43,8 +45,7 @@ class AnsibleService(object):
             cmd += f" {e_arg} "
         self.logger.debug(cmd)
 
-        for arg in ansible_playbook.get_args():
-            cmd += f" {arg} "
+        cmd += ansible_playbook.get_vault(ansible_root_path=self.ansible_root_path)
         self.logger.debug(f"final cmd: {cmd}")
 
         self.logger.info("execute ansible shell command")

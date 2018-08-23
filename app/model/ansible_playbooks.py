@@ -19,14 +19,15 @@ class AnsiblePlaybook(object):
     def __init__(self, ansible_playbook_type: AnsiblePlaybookType, inventory_group_name: str = None):
         self.name = ansible_playbook_type.pb_name
         self.inventory_group_name = inventory_group_name
-        self.args = ansible_playbook_type.args
 
         for earg in ansible_playbook_type.ext_args:
             self._extended_args.append(f"-e {earg}")
 
-    def get_args(self):
-        self.logger.debug("get_args method")
-        return [f"{','.join(self.args)}", ]
+    def get_vault(self, ansible_root_path: str):
+        self.logger.debug("get_vault method")
+        vault_arg = f'--vault-password-file={ansible_root_path}/vault.txt'
+        self.logger.debug(f"vault_arg: {vault_arg}")
+        return vault_arg
 
     def get_extended_args(self):
         self.logger.debug("get_extended_args method")
