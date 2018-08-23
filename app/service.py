@@ -75,7 +75,7 @@ class VPNMGMTService(object):
     def create_vpn_user(self, user_email: str) -> str:
         self.logger.debug(f"create_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug("create ansible playbook to create VPN user")
-        apcvu = AnsiblePlaybookCreateVPNUser()
+        apcvu = AnsiblePlaybookCreateVPNUser(ansible_playbook_type=AnsiblePlaybookType.CREATE_VPN_USER)
         self.logger.debug("add user email")
         apcvu.add_user(user_email=user_email)
         self.logger.debug("call ansible service")
@@ -98,7 +98,7 @@ class VPNMGMTService(object):
     def withdraw_vpn_user(self, user_email: str):
         self.logger.debug(f"withdraw_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug("create ansible playbook to withdraw VPN user")
-        apcvu = AnsiblePlaybookWithdrawVPNUser()
+        apcvu = AnsiblePlaybookWithdrawVPNUser(ansible_playbook_type=AnsiblePlaybookType.WITHDRAW_VPN_USER)
         self.logger.debug("add user email")
         apcvu.add_user(user_email=user_email)
         self.logger.debug("call ansible service")
@@ -128,7 +128,9 @@ class VPNMGMTService(object):
 
     def update_server_connections(self, server_ip_list: List[str], vpn_type_name: str) -> bool:
         self.logger.debug(f"create ansible playbook to update server connections depends on list: {server_ip_list}")
-        apusc = AnsiblePlaybookUpdateServerConnections(ip_addresses_list=server_ip_list, vpn_type=vpn_type_name)
+        apusc = AnsiblePlaybookUpdateServerConnections(
+            ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, ip_addresses_list=server_ip_list,
+            vpn_type=vpn_type_name)
         self.logger.debug("call ansible service")
         code = self._ansible_service.exec_playbook(ansible_playbook=apusc)
         if code == 0:
