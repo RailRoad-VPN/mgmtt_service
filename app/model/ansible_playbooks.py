@@ -63,7 +63,7 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
         return ["-e '{\"vpn\" : \"%s\"}'" % self._vpn_type, ]
 
     def get_limit(self):
-        return f"'--limit {','.join(self._ip_addresses_list)}'"
+        return f"--limit '{','.join(self._ip_addresses_list)}'"
 
 
 class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
