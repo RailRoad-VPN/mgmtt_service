@@ -54,7 +54,7 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
             self._ip_addresses_list.append(ip)
 
     def get_extended_args(self):
-        return f'{"vpn" : "{self._vpn_type}"}'
+        return '{"vpn" : "{%s}"}' % self._vpn_type
 
     def get_limit(self):
         return f"'--limit {','.join(self._ip_addresses_list)}'"
