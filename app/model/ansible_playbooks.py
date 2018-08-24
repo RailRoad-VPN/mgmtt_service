@@ -100,12 +100,12 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             # TODO ikev2 ios config
             # TODO ikev2 windows config
             # TODO openvpn android config
-            # TODO change openvpn config to openvpn windows config
-            openvpn_config_path = f"{self._user_config_dir}/{user_email}.ovpn"
-            self.logger.debug(f"work with {openvpn_config_path}")
-            if os.path.isfile(openvpn_config_path):
+            openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.tname}" \
+                                  f"_{VPNConfigurationPlatform.WINDOWS.text}_{user_email}.ovpn"
+            self.logger.debug(f"work with {openvpn_windows_config_path}")
+            if os.path.isfile(openvpn_windows_config_path):
                 self.logger.debug(f"read file")
-                file = open(openvpn_config_path, 'rb')
+                file = open(openvpn_windows_config_path, 'rb')
                 file_content = file.read()
                 file.close()
 
@@ -113,9 +113,9 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
                 config_base64_str = base64.b64encode(file_content).decode('ascii')
                 data[user_email][VPNType.OPENVPN.sid][VPNConfigurationPlatform.WINDOWS.sid] = config_base64_str
                 self.logger.debug(f"delete fil")
-                os.remove(openvpn_config_path)
+                os.remove(openvpn_windows_config_path)
             else:
-                self.logger.error(f"{openvpn_config_path} file not found!")
+                self.logger.error(f"{openvpn_windows_config_path} file not found!")
                 self.logger.error(f"We did not get OpenVPN configuration file for user with email {user_email}")
                 continue
         return data
