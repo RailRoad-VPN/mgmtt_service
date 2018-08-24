@@ -4,6 +4,8 @@ import logging
 import os
 
 from app.model import AnsiblePlaybookType
+from app.model.vpn_conf_platform import VPNConfigurationPlatform
+from app.model.vpn_type import VPNType
 
 
 class AnsiblePlaybook(object):
@@ -94,7 +96,11 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
         self.logger.debug("get_users_config_dict_base64 method")
         data = {}
         for user_email in self._user_email_list:
-            # TODO ikev2 config
+            data[user_email] = {}
+            # TODO ikev2 ios config
+            # TODO ikev2 windows config
+            # TODO openvpn android config
+            # TODO change openvpn config to openvpn windows config
             openvpn_config_path = f"{self._user_config_dir}/{user_email}.ovpn"
             self.logger.debug(f"work with {openvpn_config_path}")
             if os.path.isfile(openvpn_config_path):
@@ -105,7 +111,7 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
 
                 self.logger.debug(f"create base64 string")
                 config_base64_str = base64.b64encode(file_content).decode('ascii')
-                data[user_email] = config_base64_str
+                data[user_email][VPNType.OPENVPN.sid][VPNConfigurationPlatform.WINDOWS.sid] = config_base64_str
                 self.logger.debug(f"delete fil")
                 os.remove(openvpn_config_path)
             else:

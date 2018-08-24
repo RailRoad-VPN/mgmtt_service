@@ -97,7 +97,7 @@ class VPNMGMTService(object):
         generate user certificate on PKI infrastructure server and register it on every server
     '''
 
-    def create_vpn_user(self, user_email: str) -> str:
+    def create_vpn_user(self, user_email: str) -> dict:
         self.logger.debug(f"create_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug("create ansible playbook to create VPN user")
         apcvu = AnsiblePlaybookCreateVPNUser(ansible_playbook_type=AnsiblePlaybookType.CREATE_VPN_USER)
@@ -108,7 +108,7 @@ class VPNMGMTService(object):
         self.logger.debug("check code")
         if code == 0:
             self.logger.debug("code OK")
-            # TODO забрать конифг по пути /tmp/dfnvpn_ansible/<email>.ovpn
+            # TODO забрать конифги ikev2, openvpn для всех платформ
             user_config_dict = apcvu.get_users_config_dict_base64()
             return user_config_dict.get(user_email)
         else:
