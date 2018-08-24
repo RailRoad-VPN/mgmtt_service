@@ -19,7 +19,7 @@ class AnsiblePlaybook(object):
     _extended_args = []
 
     def __init__(self, ansible_playbook_type: AnsiblePlaybookType, inventory_group_name: str = None):
-        self.name = ansible_playbook_type.pb_name
+        self.name = ansible_playbook_type.text
         self.inventory_group_name = inventory_group_name
 
         for earg in ansible_playbook_type.ext_args:
@@ -112,8 +112,8 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
                 self.logger.debug(f"create base64 string")
                 config_base64_str = base64.b64encode(file_content).decode('ascii')
                 data[user_email] = {
-                    VPNType.OPENVPN.sid: {
-                        VPNConfigurationPlatform.WINDOWS.sid: config_base64_str
+                    VPNType.OPENVPN.text: {
+                        VPNConfigurationPlatform.WINDOWS.text: config_base64_str
                     }
 
                 }

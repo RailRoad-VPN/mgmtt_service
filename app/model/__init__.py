@@ -10,9 +10,9 @@ class AnsiblePlaybookType(Enum):
         obj._value_ = value
         return obj
 
-    def __init__(self, sid, pb_name, ext_args):
+    def __init__(self, sid, text, ext_args):
         self.sid = sid
-        self.pb_name = pb_name
+        self.text = text
         self.ext_args = ext_args
 
     CREATE_VPN_USER = (1, 'pki.client.yml', [])
