@@ -134,8 +134,9 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             "clients": client_list
         }
         client_e_arg_str = json.dumps(client_e_arg)
-        self._extended_args.append(f" -e '{client_e_arg_str}' ")
-        return self._extended_args
+        e_args = self._extended_args
+        e_args.append(f" -e '{client_e_arg_str}' ")
+        return e_args
 
     def get_limit(self):
         return []
@@ -172,7 +173,7 @@ class AnsiblePlaybookWithdrawVPNUser(AnsiblePlaybook):
             "clients": client_list
         }
         client_e_arg_str = json.dumps(client_e_arg)
-        self._extended_args.append(f"-e {client_e_arg_str}")
+        self._extended_args.append(f" -e {client_e_arg_str} ")
         return self._extended_args
 
     def get_limit(self):
