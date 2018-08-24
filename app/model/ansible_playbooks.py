@@ -100,7 +100,7 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             # TODO ikev2 ios config
             # TODO ikev2 windows config
             # TODO openvpn android config
-            openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.tname}" \
+            openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}" \
                                           f"_{VPNConfigurationPlatform.WINDOWS.text}_{user_email}.ovpn"
             self.logger.debug(f"work with {openvpn_windows_config_path}")
             if os.path.isfile(openvpn_windows_config_path):
