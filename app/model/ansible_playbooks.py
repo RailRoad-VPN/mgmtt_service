@@ -28,7 +28,7 @@ class AnsiblePlaybook(object):
     def get_vault(self, path_to_vault: str):
         self.logger.debug("get_vault method")
         vault_arg = f'--vault-password-file={path_to_vault}/vault.txt'
-        self.logger.debug(f"vault_arg: {vault_arg}")
+        self.logger.debug(f"{self.__class__}: vault_arg: {vault_arg}")
         return vault_arg
 
     def get_extended_args(self):
@@ -53,11 +53,11 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
             self._ip_addresses_list = ip_addresses_list
 
     def add_ip_address(self, ip: str):
-        self.logger.debug(f"add_ip_address method {ip}")
+        self.logger.debug(f"{self.__class__}: add_ip_address method {ip}")
         self._ip_addresses_list.append(ip)
 
     def add_ip_addresses(self, *ips):
-        self.logger.debug(f"add_ip_addresses method {ips}")
+        self.logger.debug(f"{self.__class__}: add_ip_addresses method {ips}")
         for ip in ips:
             self._ip_addresses_list.append(ip)
 
@@ -84,11 +84,11 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             self._user_email_list = user_email_list
 
     def add_user(self, user_email: str):
-        self.logger.debug(f"add_user method {user_email}")
+        self.logger.debug(f"{self.__class__}: add_user method {user_email}")
         self._user_email_list.append(user_email)
 
     def add_users(self, *user_emails):
-        self.logger.debug(f"add_users method {user_emails}")
+        self.logger.debug(f"{self.__class__}: add_users method {user_emails}")
         for user in user_emails:
             self._user_email_list.append(user)
 
@@ -102,14 +102,14 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             # TODO openvpn android config
             openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}" \
                                           f"_{VPNConfigurationPlatform.WINDOWS.text}_{user_email}.ovpn"
-            self.logger.debug(f"work with {openvpn_windows_config_path}")
+            self.logger.debug(f"{self.__class__}: work with {openvpn_windows_config_path}")
             if os.path.isfile(openvpn_windows_config_path):
-                self.logger.debug(f"read file")
+                self.logger.debug(f"{self.__class__}: read file")
                 file = open(openvpn_windows_config_path, 'rb')
                 file_content = file.read()
                 file.close()
 
-                self.logger.debug(f"create base64 string")
+                self.logger.debug(f"{self.__class__}: create base64 string")
                 config_base64_str = base64.b64encode(file_content).decode('ascii')
                 data[user_email] = {
                     VPNType.OPENVPN.text: {
@@ -117,7 +117,7 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
                     }
 
                 }
-                self.logger.debug(f"delete file")
+                self.logger.debug(f"{self.__class__}: delete file")
                 os.remove(openvpn_windows_config_path)
             else:
                 self.logger.error(f"{openvpn_windows_config_path} file not found!")
@@ -156,11 +156,11 @@ class AnsiblePlaybookWithdrawVPNUser(AnsiblePlaybook):
             self._user_email_list = user_email_list
 
     def add_user(self, user_email: str):
-        self.logger.debug(f"add_user method {user_email}")
+        self.logger.debug(f"{self.__class__}: add_user method {user_email}")
         self._user_email_list.append(user_email)
 
     def add_users(self, *user_emails):
-        self.logger.debug(f"add_users method {user_emails}")
+        self.logger.debug(f"{self.__class__}: add_users method {user_emails}")
         for user in user_emails:
             self._user_email_list.append(user)
 

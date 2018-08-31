@@ -52,9 +52,9 @@ class MGMTVPNSServersConnections(ResourceAPI):
 
         self.logger.debug('get list of IP addresses and vpn_type_name from request')
         ip_list = request_json.get('ip_list')
-        self.logger.debug(f"ip_list: {ip_list}")
+        self.logger.debug(f"{self.__class__}: ip_list: {ip_list}")
         vpn_type_name = request_json.get('vpn_type_name')
-        self.logger.debug(f"vpn_type_name: {vpn_type_name}")
+        self.logger.debug(f"{self.__class__}: vpn_type_name: {vpn_type_name}")
 
         try:
             self._vpn_mgmt_service.update_server_connections(server_ip_list=ip_list, vpn_type_name=vpn_type_name)

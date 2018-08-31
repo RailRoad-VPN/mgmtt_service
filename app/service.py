@@ -33,9 +33,9 @@ class AnsibleService(object):
         name = ansible_playbook.name
         inventory = ansible_playbook.inventory_group_name
         ext_args = ansible_playbook.get_extended_args()
-        self.logger.debug(f"playbook Name: {name}")
-        self.logger.debug(f"inventory Group: {inventory}")
-        self.logger.debug(f"args: {ext_args}")
+        self.logger.debug(f"{self.__class__}: playbook Name: {name}")
+        self.logger.debug(f"{self.__class__}: inventory Group: {inventory}")
+        self.logger.debug(f"{self.__class__}: args: {ext_args}")
 
         cmd = self._cmd_wo_args
         self.logger.debug(cmd)
@@ -59,7 +59,7 @@ class AnsibleService(object):
 
         cmd = f"/bin/su dfnadm -c \"{cmd}\""
 
-        self.logger.debug(f"final cmd: {cmd}")
+        self.logger.debug(f"{self.__class__}: final cmd: {cmd}")
 
         self.logger.info("execute ansible shell command")
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -74,7 +74,7 @@ class AnsibleService(object):
             if p_status is not None:
                 try:
                     p_status = int(p_status)
-                    self.logger.debug(f"execute ansible playbook {name} status: {p_status}")
+                    self.logger.debug(f"{self.__class__}: execute ansible playbook {name} status: {p_status}")
                 except KeyError:
                     self.logger.info(f"exec ansible playbook {name} return code: {p_status}")
                 return p_status
@@ -98,7 +98,7 @@ class VPNMGMTService(object):
     '''
 
     def create_vpn_user(self, user_email: str) -> dict:
-        self.logger.debug(f"create_vpn_user method with parameters user_email: {user_email}")
+        self.logger.debug(f"{self.__class__}: create_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug("create ansible playbook to create VPN user")
         apcvu = AnsiblePlaybookCreateVPNUser(ansible_playbook_type=AnsiblePlaybookType.CREATE_VPN_USER)
         self.logger.debug("add user email")
@@ -121,7 +121,7 @@ class VPNMGMTService(object):
     '''
 
     def withdraw_vpn_user(self, user_email: str):
-        self.logger.debug(f"withdraw_vpn_user method with parameters user_email: {user_email}")
+        self.logger.debug(f"{self.__class__}: withdraw_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug("create ansible playbook to withdraw VPN user")
         apcvu = AnsiblePlaybookWithdrawVPNUser(ansible_playbook_type=AnsiblePlaybookType.WITHDRAW_VPN_USER)
         self.logger.debug("add user email")
@@ -152,7 +152,7 @@ class VPNMGMTService(object):
     '''
 
     def update_server_connections(self, server_ip_list: List[str], vpn_type_name: str):
-        self.logger.debug(f"create ansible playbook to update server connections depends on list: {server_ip_list}")
+        self.logger.debug(f"{self.__class__}: create ansible playbook to update server connections depends on list: {server_ip_list}")
         apusc = AnsiblePlaybookUpdateServerConnections(
             ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, ip_addresses_list=server_ip_list,
             vpn_type=vpn_type_name)
