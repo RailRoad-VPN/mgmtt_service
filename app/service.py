@@ -18,11 +18,11 @@ class AnsibleService(object):
     def __init__(self, ansible_path: str, ansible_inventory_file: str, ansible_playbook_path: str):
         self.ansible_root_path = ansible_path
         self.ansible_playbook_path = ansible_playbook_path
-        self.logger.debug("ansible Root Path: " + ansible_path)
-        self.logger.debug("ansible inventory file: " + ansible_inventory_file)
-        self.logger.debug("ansible Playbooks Path: " + ansible_playbook_path)
+        self.logger.debug(f"{self.__class__}: ansible Root Path: " + ansible_path)
+        self.logger.debug(f"{self.__class__}: ansible inventory file: " + ansible_inventory_file)
+        self.logger.debug(f"{self.__class__}: ansible Playbooks Path: " + ansible_playbook_path)
 
-        self.logger.debug("create ansible command with out arguments")
+        self.logger.debug(f"{self.__class__}: create ansible command with out arguments")
         self._cmd_wo_args = f"/usr/bin/ansible-playbook {ansible_path}/{ansible_playbook_path}/" + "{pb_name}"
         if ansible_inventory_file is not None:
             self._cmd_wo_args += f" -i {ansible_inventory_file} "
@@ -99,20 +99,20 @@ class VPNMGMTService(object):
 
     def create_vpn_user(self, user_email: str) -> dict:
         self.logger.debug(f"{self.__class__}: create_vpn_user method with parameters user_email: {user_email}")
-        self.logger.debug("create ansible playbook to create VPN user")
+        self.logger.debug(f"{self.__class__}: create ansible playbook to create VPN user")
         apcvu = AnsiblePlaybookCreateVPNUser(ansible_playbook_type=AnsiblePlaybookType.CREATE_VPN_USER)
-        self.logger.debug("add user email")
+        self.logger.debug(f"{self.__class__}: add user email")
         apcvu.add_user(user_email=user_email)
-        self.logger.debug("call ansible service")
+        self.logger.debug(f"{self.__class__}: call ansible service")
         code = self._ansible_service.exec_playbook(ansible_playbook=apcvu)
-        self.logger.debug("check code")
+        self.logger.debug(f"{self.__class__}: check code")
         if code == 0:
-            self.logger.debug("code OK")
+            self.logger.debug(f"{self.__class__}: code OK")
             # TODO забрать конифги ikev2, openvpn для всех платформ
             user_config_dict = apcvu.get_users_config_dict_base64()
             return user_config_dict.get(user_email)
         else:
-            self.logger.debug("failed to create VPN user")
+            self.logger.debug(f"{self.__class__}: failed to create VPN user")
             err = VPNMGMTError.ANSIBLE_CREATE_USER_VPN_USER_ERROR
             raise AnsibleException(error=err.message, error_code=err.code, developer_message=err.developer_message)
 
@@ -122,25 +122,25 @@ class VPNMGMTService(object):
 
     def withdraw_vpn_user(self, user_email: str):
         self.logger.debug(f"{self.__class__}: withdraw_vpn_user method with parameters user_email: {user_email}")
-        self.logger.debug("create ansible playbook to withdraw VPN user")
+        self.logger.debug(f"{self.__class__}: create ansible playbook to withdraw VPN user")
         apcvu = AnsiblePlaybookWithdrawVPNUser(ansible_playbook_type=AnsiblePlaybookType.WITHDRAW_VPN_USER)
-        self.logger.debug("add user email")
+        self.logger.debug(f"{self.__class__}: add user email")
         apcvu.add_user(user_email=user_email)
-        self.logger.debug("call ansible service")
+        self.logger.debug(f"{self.__class__}: call ansible service")
         code = self._ansible_service.exec_playbook(ansible_playbook=apcvu, is_async=False)
-        self.logger.debug("check code")
+        self.logger.debug(f"{self.__class__}: check code")
         if code == 0:
-            self.logger.debug("code OK")
-            self.logger.debug("create ansible playbook to get updated CRL from PKI server")
+            self.logger.debug(f"{self.__class__}: code OK")
+            self.logger.debug(f"{self.__class__}: create ansible playbook to get updated CRL from PKI server")
             apgc = AnsiblePlaybookGetCRL()
-            self.logger.debug("call ansible service")
+            self.logger.debug(f"{self.__class__}: call ansible service")
             code = self._ansible_service.exec_playbook(ansible_playbook=apgc, is_async=False)
-            self.logger.debug("check code")
+            self.logger.debug(f"{self.__class__}: check code")
             if code == 0:
-                self.logger.debug("code OK")
-                self.logger.debug("create ansible playbook to update CRL on every VPN server")
+                self.logger.debug(f"{self.__class__}: code OK")
+                self.logger.debug(f"{self.__class__}: create ansible playbook to update CRL on every VPN server")
                 appc = AnsiblePlaybookPutCRL()
-                self.logger.debug("call ansible service")
+                self.logger.debug(f"{self.__class__}: call ansible service")
                 self._ansible_service.exec_playbook(ansible_playbook=appc, is_async=True)
             else:
                 self.logger.error("failed to update CRL on every VPN server")
@@ -156,7 +156,7 @@ class VPNMGMTService(object):
         apusc = AnsiblePlaybookUpdateServerConnections(
             ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, ip_addresses_list=server_ip_list,
             vpn_type=vpn_type_name)
-        self.logger.debug("call ansible service")
+        self.logger.debug(f"{self.__class__}: call ansible service")
         code = self._ansible_service.exec_playbook(ansible_playbook=apusc)
         if code != 0:
             err = VPNMGMTError.ANSIBLE_UPDATE_SERVER_CONNECTIONS_ERROR

@@ -26,16 +26,16 @@ class AnsiblePlaybook(object):
             self._extended_args.append(f"-e {earg}")
 
     def get_vault(self, path_to_vault: str):
-        self.logger.debug("get_vault method")
+        self.logger.debug(f"{self.__class__}: get_vault method")
         vault_arg = f'--vault-password-file={path_to_vault}/vault.txt'
         self.logger.debug(f"{self.__class__}: vault_arg: {vault_arg}")
         return vault_arg
 
     def get_extended_args(self):
-        self.logger.debug("get_extended_args method")
+        self.logger.debug(f"{self.__class__}: get_extended_args method")
 
     def get_limit(self):
-        self.logger.debug("get_limit method")
+        self.logger.debug(f"{self.__class__}: get_limit method")
 
 
 class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
@@ -93,7 +93,7 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
             self._user_email_list.append(user)
 
     def get_users_config_dict_base64(self) -> dict:
-        self.logger.debug("get_users_config_dict_base64 method")
+        self.logger.debug(f"{self.__class__}: get_users_config_dict_base64 method")
         data = {}
         for user_email in self._user_email_list:
             data[user_email] = {}
