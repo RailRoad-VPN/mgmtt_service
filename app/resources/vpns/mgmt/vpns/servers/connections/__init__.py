@@ -35,9 +35,8 @@ class MGMTVPNSServersConnections(ResourceAPI):
         ]
         return api_urls
 
-    def __init__(self, vpnmgmt_service: VPNMGMTService, config: dict) -> None:
-        super().__init__()
-        self._config = config
+    def __init__(self, vpnmgmt_service: VPNMGMTService, *args) -> None:
+        super().__init__(*args)
         self._vpn_mgmt_service = vpnmgmt_service
 
     @auth.login_required

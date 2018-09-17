@@ -37,10 +37,9 @@ class VPNSMGMTUsersAPI(ResourceAPI):
         ]
         return api_urls
 
-    def __init__(self, vpn_mgmt_service: VPNMGMTService, config: dict) -> None:
-        super().__init__()
+    def __init__(self, vpn_mgmt_service: VPNMGMTService, *args) -> None:
+        super().__init__(*args)
         self._vpn_mgmt_service = vpn_mgmt_service
-        self._config = config
 
     @auth.login_required
     def post(self, user_email: str) -> Response:
