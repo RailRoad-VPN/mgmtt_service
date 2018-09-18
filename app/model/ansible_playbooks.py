@@ -24,6 +24,8 @@ class AnsiblePlaybook(object):
 
         for earg in ansible_playbook_type.ext_args:
             self._extended_args.append(f"-e {earg}")
+        else:
+            self._extended_args = []
 
     def get_vault(self, path_to_vault: str):
         self.logger.debug(f"{self.__class__}: get_vault method")
@@ -82,6 +84,8 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
 
         if user_email_list:
             self._user_email_list = user_email_list
+        else:
+            self._user_email_list = []
 
     def add_user(self, user_email: str):
         self.logger.debug(f"{self.__class__}: add_user method {user_email}")
@@ -154,6 +158,8 @@ class AnsiblePlaybookWithdrawVPNUser(AnsiblePlaybook):
 
         if user_email_list:
             self._user_email_list = user_email_list
+        else:
+            self._user_email_list = []
 
     def add_user(self, user_email: str):
         self.logger.debug(f"{self.__class__}: add_user method {user_email}")
