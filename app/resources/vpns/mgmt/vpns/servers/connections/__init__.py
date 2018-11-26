@@ -50,13 +50,11 @@ class MGMTVPNSServersConnections(ResourceAPI):
             return make_error_request_response(HTTPStatus.BAD_REQUEST, err=VPNMGMTError.REQUEST_NO_JSON)
 
         self.logger.debug('get list of IP addresses and vpn_type_name from request')
-        ip_list = request_json.get('ip_list')
-        self.logger.debug(f"{self.__class__}: ip_list: {ip_list}")
-        vpn_type_name = request_json.get('vpn_type_name')
-        self.logger.debug(f"{self.__class__}: vpn_type_name: {vpn_type_name}")
+        servers_group = request_json.get('servers_group')
+        self.logger.debug(f"{self.__class__}: servers_group: {servers_group}")
 
         try:
-            self._vpn_mgmt_service.update_server_connections(server_ip_list=ip_list, vpn_type_name=vpn_type_name)
+            self._vpn_mgmt_service.update_server_connections(server_ip_list=servers_group)
 
             response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
             resp = make_api_response(data=response_data, http_code=response_data.code)

@@ -151,11 +151,10 @@ class VPNMGMTService(object):
         retrieve connections information from every VPN server (call scripts)
     '''
 
-    def update_server_connections(self, server_ip_list: List[str], vpn_type_name: str):
-        self.logger.debug(f"{self.__class__}: create ansible playbook to update server connections depends on list: {server_ip_list}")
+    def update_server_connections(self, servers_group: str):
+        self.logger.debug(f"{self.__class__}: create ansible playbook to update server connections depends on list: {servers_group}")
         apusc = AnsiblePlaybookUpdateServerConnections(
-            ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, ip_addresses_list=server_ip_list,
-            vpn_type=vpn_type_name)
+            ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, servers_group=servers_group)
         self.logger.debug(f"{self.__class__}: call ansible service")
         code = self._ansible_service.exec_playbook(ansible_playbook=apusc)
         if code != 0:

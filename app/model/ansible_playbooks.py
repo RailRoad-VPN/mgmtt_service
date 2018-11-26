@@ -45,29 +45,20 @@ class AnsiblePlaybookUpdateServerConnections(AnsiblePlaybook):
 
     logger = logging.getLogger(__name__)
 
-    _ip_addresses_list = []
+    _servers_group = None
     _vpn_type = None
 
     def __init__(self, vpn_type: str, ip_addresses_list: list = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._vpn_type = vpn_type
         if ip_addresses_list:
-            self._ip_addresses_list = ip_addresses_list
-
-    def add_ip_address(self, ip: str):
-        self.logger.debug(f"{self.__class__}: add_ip_address method {ip}")
-        self._ip_addresses_list.append(ip)
-
-    def add_ip_addresses(self, *ips):
-        self.logger.debug(f"{self.__class__}: add_ip_addresses method {ips}")
-        for ip in ips:
-            self._ip_addresses_list.append(ip)
+            self._servers_group = ip_addresses_list
 
     def get_extended_args(self):
         return ["-e '{\"vpn\" : \"%s\"}'" % self._vpn_type, ]
 
     def get_limit(self):
-        return f"--limit '{','.join(self._ip_addresses_list)}'"
+        return f"--limit '{self._servers_group}'"
 
 
 class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
@@ -101,32 +92,48 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
         data = {}
         for user_email in self._user_email_list:
             data[user_email] = {}
-            # TODO ikev2 ios config
-            # TODO ikev2 windows config
-            # TODO openvpn android config
-            openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}" \
-                                          f"_{VPNConfigurationPlatform.WINDOWS.text}_{user_email}.ovpn"
-            self.logger.debug(f"{self.__class__}: work with {openvpn_windows_config_path}")
-            if os.path.isfile(openvpn_windows_config_path):
-                self.logger.debug(f"{self.__class__}: read file")
-                file = open(openvpn_windows_config_path, 'rb')
-                file_content = file.read()
-                file.close()
+            openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}_" \
+                                          f"{VPNConfigurationPlatform.WINDOWS.text}_" \
+                                          f"{user_email}.ovpn"
+            openvpn_android_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}_" \
+                                          f"{VPNConfigurationPlatform.ANDROID.text}_" \
+                                          f"{user_email}.ovpn"
 
-                self.logger.debug(f"{self.__class__}: create base64 string")
-                config_base64_str = base64.b64encode(file_content).decode('ascii')
-                data[user_email] = {
-                    VPNType.OPENVPN.text: {
-                        VPNConfigurationPlatform.WINDOWS.text: config_base64_str
+            config_list = [
+                {
+                    'vpn_type': VPNType.OPENVPN.text,
+                    'platform': VPNConfigurationPlatform.WINDOWS.text,
+                    'config_path': openvpn_windows_config_path
+                },
+                {
+                    'vpn_type': VPNType.OPENVPN.text,
+                    'platform': VPNConfigurationPlatform.ANDROID.text,
+                    'config_path': openvpn_android_config_path
+                },
+            ]
+
+            for config in config_list:
+                self.logger.debug(f"{self.__class__}: work with {config}")
+                if os.path.isfile(config['config_path']):
+                    self.logger.debug(f"{self.__class__}: read file")
+                    file = open(config['config_path'], 'rb')
+                    file_content = file.read()
+                    file.close()
+
+                    self.logger.debug(f"{self.__class__}: create base64 string")
+                    config_base64_str = base64.b64encode(file_content).decode('ascii')
+                    data[user_email] = {
+                        config['vpn_type']: {
+                            config['platform']: config_base64_str
+                        }
                     }
-
-                }
-                self.logger.debug(f"{self.__class__}: delete file")
-                os.remove(openvpn_windows_config_path)
-            else:
-                self.logger.error(f"{openvpn_windows_config_path} file not found!")
-                self.logger.error(f"We did not get OpenVPN configuration file for user with email {user_email}")
-                continue
+                    self.logger.debug(f"{self.__class__}: delete file")
+                    os.remove(config['config_path'])
+                else:
+                    self.logger.error(f"{config['config_path']} file not found!")
+                    self.logger.error(f"We did not get {config['vpn_type']} for platform {config['platform']} "
+                                      f"configuration file for user with email {user_email}")
+                    continue
         return data
 
     def get_extended_args(self):
@@ -191,8 +198,6 @@ class AnsiblePlaybookGetCRL(AnsiblePlaybook):
 
     logger = logging.getLogger(__name__)
 
-    _user_email_list = []
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -207,8 +212,6 @@ class AnsiblePlaybookPutCRL(AnsiblePlaybook):
     __version__ = 1
 
     logger = logging.getLogger(__name__)
-
-    _user_email_list = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
