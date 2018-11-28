@@ -66,7 +66,7 @@ class AnsibleService(object):
 
         if not is_async:
             self.logger.info("execute in SYNC mode")
-            p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             (output, err) = p.communicate()
             p_status = p.wait()
             if output is not None:
@@ -83,7 +83,7 @@ class AnsibleService(object):
             return 9090909090
         else:
             self.logger.info("execute in ASYNC mode")
-            subprocess.Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None)
+            subprocess.Popen(cmd, shell=True, stdin=None, stdout=None, stderr=None)
             return 0
 
 
