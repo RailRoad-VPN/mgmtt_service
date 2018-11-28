@@ -98,24 +98,14 @@ class VPNMGMTService(object):
         generate user certificate on PKI infrastructure server and register it on every server
     '''
 
-    def create_vpn_user(self, user_email: str) -> dict:
+    def create_vpn_user(self, user_email: str) -> None:
         self.logger.debug(f"{self.__class__}: create_vpn_user method with parameters user_email: {user_email}")
         self.logger.debug(f"{self.__class__}: create ansible playbook to create VPN user")
         apcvu = AnsiblePlaybookCreateVPNUser(ansible_playbook_type=AnsiblePlaybookType.CREATE_VPN_USER)
         self.logger.debug(f"{self.__class__}: add user email")
         apcvu.add_user(user_email=user_email)
         self.logger.debug(f"{self.__class__}: call ansible service")
-        code = self._ansible_service.exec_playbook(ansible_playbook=apcvu)
-        self.logger.debug(f"{self.__class__}: check code")
-        if code == 0:
-            self.logger.debug(f"{self.__class__}: code OK")
-            # TODO забрать конифги ikev2, openvpn для всех платформ
-            user_config_dict = apcvu.get_users_config_dict_base64()
-            return user_config_dict.get(user_email)
-        else:
-            self.logger.debug(f"{self.__class__}: failed to create VPN user")
-            err = VPNMGMTError.ANSIBLE_CREATE_USER_VPN_USER_ERROR
-            raise AnsibleException(error=err.message, error_code=err.code, developer_message=err.developer_message)
+        self._ansible_service.exec_playbook(ansible_playbook=apcvu)
 
     '''
         withdaw user certificate on PKI infrastructure server and withdraw in on every server
@@ -128,14 +118,14 @@ class VPNMGMTService(object):
         self.logger.debug(f"{self.__class__}: add user email")
         apcvu.add_user(user_email=user_email)
         self.logger.debug(f"{self.__class__}: call ansible service")
-        code = self._ansible_service.exec_playbook(ansible_playbook=apcvu, is_async=False)
+        code = self._ansible_service.exec_playbook(ansible_playbook=apcvu, is_async=True)
         self.logger.debug(f"{self.__class__}: check code")
         if code == 0:
             self.logger.debug(f"{self.__class__}: code OK")
             self.logger.debug(f"{self.__class__}: create ansible playbook to get updated CRL from PKI server")
             apgc = AnsiblePlaybookGetCRL()
             self.logger.debug(f"{self.__class__}: call ansible service")
-            code = self._ansible_service.exec_playbook(ansible_playbook=apgc, is_async=False)
+            code = self._ansible_service.exec_playbook(ansible_playbook=apgc, is_async=True)
             self.logger.debug(f"{self.__class__}: check code")
             if code == 0:
                 self.logger.debug(f"{self.__class__}: code OK")
@@ -157,7 +147,7 @@ class VPNMGMTService(object):
         apusc = AnsiblePlaybookUpdateServerConnections(
             ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, servers_group=servers_group)
         self.logger.debug(f"{self.__class__}: call ansible service")
-        code = self._ansible_service.exec_playbook(ansible_playbook=apusc)
+        code = self._ansible_service.exec_playbook(ansible_playbook=apusc, is_async=True)
         if code != 0:
             err = VPNMGMTError.ANSIBLE_UPDATE_SERVER_CONNECTIONS_ERROR
             raise AnsibleException(error=err.message, error_code=err.code, developer_message=err.developer_message)

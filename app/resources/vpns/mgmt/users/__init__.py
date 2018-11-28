@@ -46,10 +46,8 @@ class VPNSMGMTUsersAPI(ResourceAPI):
         self.logger.debug('post method')
 
         try:
-            user_config_dict = self._vpn_mgmt_service.create_vpn_user(user_email=user_email)
-            self.logger.debug(f"{self.__class__}: created user configurations: {user_config_dict}")
-            response_data = APIResponse(status=APIResponseStatus.success.status, data=user_config_dict,
-                                        code=HTTPStatus.OK)
+            self._vpn_mgmt_service.create_vpn_user(user_email=user_email)
+            response_data = APIResponse(status=APIResponseStatus.success.status, code=HTTPStatus.OK)
             resp = make_api_response(data=response_data, http_code=response_data.code)
             return resp
         except AnsibleException as e:

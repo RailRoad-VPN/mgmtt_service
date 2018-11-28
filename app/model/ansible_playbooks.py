@@ -68,8 +68,6 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
 
     _user_email_list = []
 
-    _user_config_dir = '/tmp/dfnvpn_ansible'
-
     def __init__(self, user_email_list: list = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -86,55 +84,6 @@ class AnsiblePlaybookCreateVPNUser(AnsiblePlaybook):
         self.logger.debug(f"{self.__class__}: add_users method {user_emails}")
         for user in user_emails:
             self._user_email_list.append(user)
-
-    def get_users_config_dict_base64(self) -> dict:
-        self.logger.debug(f"{self.__class__}: get_users_config_dict_base64 method")
-        data = {}
-        for user_email in self._user_email_list:
-            data[user_email] = {}
-            openvpn_windows_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}_" \
-                                          f"{VPNConfigurationPlatform.WINDOWS.text}_" \
-                                          f"{user_email}.ovpn"
-            openvpn_android_config_path = f"{self._user_config_dir}/{VPNType.OPENVPN.text}_" \
-                                          f"{VPNConfigurationPlatform.ANDROID.text}_" \
-                                          f"{user_email}.ovpn"
-
-            config_list = [
-                {
-                    'vpn_type': VPNType.OPENVPN.text,
-                    'platform': VPNConfigurationPlatform.WINDOWS.text,
-                    'config_path': openvpn_windows_config_path
-                },
-                {
-                    'vpn_type': VPNType.OPENVPN.text,
-                    'platform': VPNConfigurationPlatform.ANDROID.text,
-                    'config_path': openvpn_android_config_path
-                },
-            ]
-
-            for config in config_list:
-                self.logger.debug(f"{self.__class__}: work with {config}")
-                if os.path.isfile(config['config_path']):
-                    self.logger.debug(f"{self.__class__}: read file")
-                    file = open(config['config_path'], 'rb')
-                    file_content = file.read()
-                    file.close()
-
-                    self.logger.debug(f"{self.__class__}: create base64 string")
-                    config_base64_str = base64.b64encode(file_content).decode('ascii')
-                    data[user_email] = {
-                        config['vpn_type']: {
-                            config['platform']: config_base64_str
-                        }
-                    }
-                    self.logger.debug(f"{self.__class__}: delete file")
-                    os.remove(config['config_path'])
-                else:
-                    self.logger.error(f"{config['config_path']} file not found!")
-                    self.logger.error(f"We did not get {config['vpn_type']} for platform {config['platform']} "
-                                      f"configuration file for user with email {user_email}")
-                    continue
-        return data
 
     def get_extended_args(self):
         client_list = []
