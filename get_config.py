@@ -1,10 +1,9 @@
 import logging
-
-logger = logging.getLogger("get_config_script")
-
 import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+
+logger = logging.getLogger("get_config_script")
 
 
 class Watcher:
@@ -31,10 +30,11 @@ class Handler(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event, **kwargs):
+        print(event)
         if event.is_directory:
             return None
         elif event.event_type == 'created':
-            print("Received created event - %s." % event.src_path)
+            logger.debug("Received created event - %s." % event.src_path)
 
 
 if __name__ == '__main__':
