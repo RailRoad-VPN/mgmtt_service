@@ -83,7 +83,7 @@ class AnsibleService(object):
             return 9090909090
         else:
             self.logger.info("execute in ASYNC mode")
-            subprocess.Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None, close_fds=True)
+            subprocess.Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None)
             return 0
 
 
