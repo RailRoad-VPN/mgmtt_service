@@ -63,10 +63,11 @@ class AnsibleService(object):
         self.logger.debug(f"{self.__class__}: final cmd: {cmd}")
 
         self.logger.info("execute ansible shell command")
-        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (output, err) = p.communicate()
 
         if not is_async:
+            self.logger.info("execute in SYNC mode")
+            p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            (output, err) = p.communicate()
             p_status = p.wait()
             if output is not None:
                 self.logger.error(f"execute ansible playbook {name} output: {output}")
@@ -81,6 +82,8 @@ class AnsibleService(object):
                 return p_status
             return 9090909090
         else:
+            self.logger.info("execute in ASYNC mode")
+            subprocess.Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None, close_fds=True)
             return 0
 
 
