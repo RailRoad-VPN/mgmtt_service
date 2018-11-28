@@ -3,6 +3,11 @@ import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='MGMT_SERVICE get_config_script: %(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 logger = logging.getLogger("get_config_script")
 
 
@@ -30,7 +35,7 @@ class Handler(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event, **kwargs):
-        print(event)
+        logger.debug(event)
         if event.is_directory:
             return None
         elif event.event_type == 'created':
