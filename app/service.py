@@ -143,7 +143,8 @@ class VPNMGMTService(object):
     '''
 
     def update_server_connections(self, servers_group: str):
-        self.logger.debug(f"{self.__class__}: create ansible playbook to update server connections depends on list: {servers_group}")
+        self.logger.debug(
+            f"{self.__class__}: create ansible playbook to update server connections depends on list: {servers_group}")
         apusc = AnsiblePlaybookUpdateServerConnections(
             ansible_playbook_type=AnsiblePlaybookType.UPDATE_SERVER_CONNECTIONS, servers_group=servers_group)
         self.logger.debug(f"{self.__class__}: call ansible service")
