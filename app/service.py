@@ -105,7 +105,7 @@ class VPNMGMTService(object):
         self.logger.debug(f"{self.__class__}: add user email")
         apcvu.add_user(user_email=user_email)
         self.logger.debug(f"{self.__class__}: call ansible service")
-        self._ansible_service.exec_playbook(ansible_playbook=apcvu)
+        self._ansible_service.exec_playbook(ansible_playbook=apcvu, is_async=True)
 
     '''
         withdaw user certificate on PKI infrastructure server and withdraw in on every server
