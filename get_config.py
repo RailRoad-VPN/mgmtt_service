@@ -18,6 +18,7 @@ logging.basicConfig(
 
 logger = logging.getLogger("get_config_script")
 
+
 def gen_sec_token() -> str:
     token = ""
     ruuid = str(uuid.uuid4())
@@ -57,6 +58,7 @@ def get_unixtime() -> int:
     d = datetime.utcnow()
     unixtime = calendar.timegm(d.utctimetuple())
     return unixtime
+
 
 DIRECTORY_TO_WATCH = "/tmp/dfnvpn_ansible"
 
@@ -175,6 +177,7 @@ def process_file(config_file_name):
     # config_file_path = DIRECTORY_TO_WATCH + config_file_name
     config_file_path = config_file_name
     vpn_config = VPNConfig(file_path=config_file_path)
+    vpn_config.process_config_file()
     is_ok = vpn_config.send()
     if not is_ok:
         logger.debug("HALT! API Response IS NOT OK! Need retry! Mark file.")
