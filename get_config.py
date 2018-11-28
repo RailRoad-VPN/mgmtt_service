@@ -35,10 +35,8 @@ class Handler(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event, **kwargs):
-        logger.debug(event)
-        if event.is_directory:
-            return None
-        elif event.event_type == 'created':
+        logger.debug(f"{event.event_type}")
+        if event.event_type == 'created':
             logger.debug("Received created event - %s." % event.src_path)
 
 
