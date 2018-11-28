@@ -181,6 +181,7 @@ def process_file(config_file_name):
     is_ok = vpn_config.send()
     if not is_ok:
         logger.debug("HALT! API Response IS NOT OK! Need retry! Mark file.")
+        vpn_config.mark_retry()
     else:
         logger.debug("API Response IS OK! Delete file.")
         vpn_config.delete()
