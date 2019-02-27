@@ -115,13 +115,15 @@ class VPNConfig:
         self.file_path = file_path
 
         file_name = self.file_path.split("/")[-1]
-        self.vpn_type = file_name.split("_")[0]
+        file_name_splitted = file_name.split("#@")
+
+        self.vpn_type = file_name_splitted[0]
         logger.debug(f"vpn_type_text: {self.vpn_type}")
-        self.platform = file_name.split("_")[1]
+        self.platform = file_name_splitted[1]
         logger.debug(f"platform_text: {self.platform}")
-        self.email = ".".join(file_name.split("_")[2].split(".")[0:-1])
+        self.email = ".".join(file_name_splitted[2].split(".")[0:-1])
         logger.debug(f"email: {self.email}")
-        self.file_extension = file_name.split("_")[2].split(".")[-1]
+        self.file_extension = file_name_splitted[2].split(".")[-1]
         logger.debug(f"file_extension: {self.file_extension}")
 
         if self.file_extension == "retry":
