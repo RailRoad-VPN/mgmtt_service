@@ -176,8 +176,7 @@ def process_file(config_file_name):
     if config_file_name.split(".")[-1] != 'ovpn':
         logger.debug("no ovpn file. pass")
         return
-    config_file_path = DIRECTORY_TO_WATCH + "/" + config_file_name
-    # config_file_path = config_file_name
+    config_file_path = config_file_name
     vpn_config = VPNConfig(file_path=config_file_path)
     vpn_config.process_config_file()
     is_ok = vpn_config.send()
@@ -197,7 +196,7 @@ if __name__ == '__main__':
     # process existed files on launch script moment
     config_file_name_list = os.listdir(DIRECTORY_TO_WATCH)
     for config_file_name in config_file_name_list:
-        process_file(config_file_name=config_file_name)
+        process_file(config_file_name=DIRECTORY_TO_WATCH + "/" + config_file_name)
 
     w = Watcher()
     w.run()
