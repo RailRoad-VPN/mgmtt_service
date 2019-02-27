@@ -115,7 +115,7 @@ class VPNConfig:
         self.file_path = file_path
 
         file_name = self.file_path.split("/")[-1]
-        file_name_splitted = file_name.split("#@")
+        file_name_splitted = file_name.split("_=_")
 
         self.vpn_type = file_name_splitted[0]
         logger.debug(f"vpn_type_text: {self.vpn_type}")
