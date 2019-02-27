@@ -58,7 +58,7 @@ class AnsibleService(object):
             self.logger.debug(cmd)
 
         # cmd = f"/bin/su dfnadm -c \"{cmd}\""
-        cmd = f"{cmd} -vvvv"
+        cmd = f"{cmd} -vvvvvv"
 
         self.logger.debug(f"{self.__class__}: final cmd: {cmd}")
 
