@@ -174,7 +174,7 @@ def process_file(config_file_name):
     if config_file_name.split(".")[-1] != 'ovpn':
         logger.debug("no ovpn file. pass")
         return
-    config_file_path = DIRECTORY_TO_WATCH + config_file_name
+    config_file_path = DIRECTORY_TO_WATCH + "/" + config_file_name
     # config_file_path = config_file_name
     vpn_config = VPNConfig(file_path=config_file_path)
     vpn_config.process_config_file()
