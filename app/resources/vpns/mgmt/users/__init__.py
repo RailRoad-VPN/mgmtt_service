@@ -10,8 +10,7 @@ from app.model.exception import AnsibleException
 from app.service import VPNMGMTService
 
 sys.path.insert(0, '../rest_api_library')
-from api import ResourceAPI
-from rest import APIResourceURL
+from api import ResourceAPI, APIResourceURL
 from response import APIResponseStatus, APIResponse
 from response import make_api_response
 
